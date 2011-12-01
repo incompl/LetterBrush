@@ -16,24 +16,48 @@ body {
 #hScroll {
   width: 800px;
   height: 20px;
-  background-color: #5d5d5d;
-  position: absolute;
   top: 600px;
-  border-width: 2px;
-  border-color: black #949494 #949494 black;
-  border-style: solid;
+  background: rgb(255,255,255); /* Old browsers */
+  background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(209,209,209,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(209,209,209,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* IE10+ */
+  background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d1d1d1',GradientType=0 ); /* IE6-9 */
 }
 
-#hScrollHandle {
+#vScroll {
+  width: 20px;
+  height: 600px;
+  left: 800px;
+  bbackground: rgb(255,255,255); /* Old browsers */
+  background: -moz-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(209,209,209,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(209,209,209,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(left, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* IE10+ */
+  background: linear-gradient(left, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d1d1d1',GradientType=1 ); /* IE6-9 */
+}
+
+#hScroll, #vScroll {
+  position: absolute;
+  background-color: #d9d9d9;
+  border-radius: 10px;
+}
+
+#hScrollHandle, #vScrollHandle {
   width: 16px;
   height: 16px;
   background-color: #e083ff;
   border-radius: 10px;
-  border: solid #c7c7c7 2px;
-  position: absolute;
+  border: solid #959595 2px;
+  position: relative;
 }
 
 #tools {
+  margin-left: 20px;
   width: 220px;
   float: left;
   text-align: center;

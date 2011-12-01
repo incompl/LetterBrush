@@ -74,8 +74,8 @@ $(function() {
           // highlight affected nodes
           ctx.fillStyle = "rgba(0, 255, 0, .3)";
           $.each(nodes, function() {
-            ctx.fillRect(this.x * view.scale,
-                       this.y * view.scale,
+            ctx.fillRect((this.x - view.x) * view.scale,
+                       (this.y - view.y) * view.scale,
                        view.scale,
                        view.scale);
 					});
@@ -84,10 +84,10 @@ $(function() {
           ctx.strokeStyle = "rgba(0, 150, 0, .8)";
           ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.moveTo(x1 * view.scale + view.scale / 2,
-                     y1 * view.scale + view.scale / 2);
-          ctx.lineTo(x2 * view.scale + view.scale / 2,
-                     y2 * view.scale + view.scale / 2);
+          ctx.moveTo((x1 - view.x) * view.scale + view.scale / 2,
+                     (y1 - view.y) * view.scale + view.scale / 2);
+          ctx.lineTo((x2 - view.x) * view.scale + view.scale / 2,
+                     (y2 - view.y) * view.scale + view.scale / 2);
           ctx.closePath();
           ctx.stroke();
         }
@@ -151,15 +151,12 @@ $(function() {
     
     // square tool
     square: inherit(Mode, {
-      mousedown: function(row, col) {
-        
-      },
       mousemove: function(row, col) {
         draw();
         ctx.strokeStyle = "black";
         ctx.lineWidth = 2;
-        ctx.strokeRect(interaction.originalRow * view.scale,
-                     interaction.originalCol * view.scale,
+        ctx.strokeRect((interaction.originalRow - view.x) * view.scale,
+                     (interaction.originalCol - view.y) * view.scale,
                      (row - interaction.originalRow) * view.scale,
                      (col - interaction.originalCol) * view.scale);
       },
@@ -210,8 +207,8 @@ $(function() {
   // delegate events to current draw mode's handler
   $easel.mousedown(function(e) {
     interaction = {};
-    var row = Math.round(e.clientX / view.scale);
-    var col = Math.round(e.clientY / view.scale);
+    var row = Math.round(e.clientX / view.scale) + view.x;
+    var col = Math.round(e.clientY / view.scale) + view.y;
     interaction.originalRow = row;
     interaction.originalCol = col;
     interaction.dragging = true;
@@ -223,15 +220,15 @@ $(function() {
     if (!interaction.dragging) {
       return;
     }
-    var row = Math.floor(e.clientX / view.scale) - view.x;
-    var col = Math.floor(e.clientY / view.scale) - view.y;
+    var row = Math.floor(e.clientX / view.scale) + view.x;
+    var col = Math.floor(e.clientY / view.scale) + view.y;
     if (text[col] !== undefined && text[col][row] !== undefined) {
       mode[currentMode].mousemove(row, col);
     }
   })
   .mouseup(function(e) {
-    var row = Math.floor(e.clientX / view.scale);
-    var col = Math.floor(e.clientY / view.scale);
+    var row = Math.floor(e.clientX / view.scale) + view.x;
+    var col = Math.floor(e.clientY / view.scale) + view.y;
     interaction.dragging = false;
     if (text[col] !== undefined && text[col][row] !== undefined) {
       mode[currentMode].mouseup(row, col);
@@ -244,22 +241,22 @@ $(function() {
   function draw() {
     var color;
     ctx.clearRect(0, 0, view.width * view.scale, view.height * view.scale);
-    for (currentRow = 0; currentRow < view.height; currentRow++) {
+    for (currentRow = view.y; currentRow < view.y + view.height; currentRow++) {
       var row = text[currentRow];
       if (!row) {
         continue;
       }
-      for (currentCol = 0; currentCol < view.width; currentCol++) {
+      for (currentCol = view.x; currentCol < view.x + view.width; currentCol++){
         if (!row[currentCol]) {
           continue;
         }
         color = (row[currentCol].charCodeAt(0) - 48) * 3;
         color = color < 0 ? 0 : color;
         color = color > 360 ? 360 : color;
-        ctx.fillStyle = "hsl(" + color + ",100%,30%)";
+        ctx.fillStyle = "hsl(" + color + ", 100%, 30%)";
         ctx.fillText(row[currentCol],
-                     (view.x + currentCol) * view.scale,
-                     (view.y + currentRow + 1) * view.scale);
+                     (currentCol - view.x) * view.scale,
+                     (currentRow - view.y + 1) * view.scale);
       }
     }
   }
@@ -322,6 +319,7 @@ $(function() {
       title: "Export",
       modal: true,
       width: 450,
+      position: ['center', 200],
       buttons: {
         done: function() {
           $(this).dialog("close");
@@ -344,12 +342,49 @@ $(function() {
   });
   
   // horizontal scroll
-  $("#hScroll").click(function(e) {
-    var newX = 1 - Math.round((e.clientX / 800) * text[0].length / view.scale);
-    console.log(newX);
-    $("#hScrollHandle").css("left", e.clientX - 15);
+  function hScrollTo(e) {
+    var sliderX = e.clientX - 8;
+    sliderX = sliderX < 0 ? 0 : sliderX;
+    sliderX = sliderX > 780 ? 780 : sliderX;
+    var newX = Math.round((e.clientX / 780) * (text[0].length - view.width));
+    $("#hScrollHandle").css("left", sliderX);
     view.x = newX;
     draw();
+  }
+  $("#hScroll").mousedown(function(e) {
+    hScrollTo(e);
+    $(this).data("scrolling", true);
+  })
+  .mousemove(function(e) {
+    if ($(this).data("scrolling") === true) {
+      hScrollTo(e);
+    }
+  })
+  .mouseup(function() {
+    $(this).data("scrolling", false);
+  });
+  
+  // vertical scroll
+  function vScrollTo(e) {
+    var sliderY = e.clientY - 8;
+    sliderY = sliderY < 0 ? 0 : sliderY;
+    sliderY = sliderY > 580 ? 580 : sliderY;
+    var newY = Math.round((e.clientY / 580) * (text.length - view.height));
+    $("#vScrollHandle").css("top", sliderY);
+    view.y = newY;
+    draw();
+  }
+  $("#vScroll").mousedown(function(e) {
+    vScrollTo(e);
+    $(this).data("scrolling", true);
+  })
+  .mousemove(function(e) {
+    if ($(this).data("scrolling") === true) {
+      vScrollTo(e);
+    }
+  })
+  .mouseup(function() {
+    $(this).data("scrolling", false);
   });
   
 });
