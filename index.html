@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>letterbrush</title>
+    <link rel="stylesheet" href="letterbrush.css">
+    <link rel="stylesheet" href="lib/jqui/jquery-ui-1.8.16.custom.css">
+    <script src="lib/jquery.js"></script>
+    <script src="lib/jqui/jquery-ui-1.8.16.custom.min.js"></script>
+    <script src="lib/inherit.js"></script>
+    <script src="lib/keyDecode.js"></script>
+    <script src="letterbrush.js"></script>
+  </head>
+  </head>
+  <body>
+    <canvas id="easel" width="800" height="600">
+      You need canvas!
+    </canvas>
+    <div id="hScroll">
+      <div id="hScrollHandle"></div>
+    </div>
+    <div id="tools">
+      <div id="currentCharLabel">today's letter is</div>
+      <div id="currentChar">G</div>
+      <div id="currentCharHelp">type a letter<br>draw that letter</div>
+      <div id="toolSelector">
+        <div id="toolHelp">choose your weapon:</div>
+        <button data-tool="pencil" class="tool active">pencil</button>
+        <button data-tool="line" class="tool">line</button>
+        <button data-tool="square" class="tool">square</button>
+        <button data-tool="fill" class="tool">fill</button>
+      </div>
+      <div id="importExport">
+        <button id="import">import</button>
+        <button id="export">export</button>
+      </div>
+      <div id="importDialog">
+        <textarea id="importText">paste text here</textarea>
+      </div>
+      <div id="exportDialog">
+        <div id="exportText"></div>
+      </div>
+    </div>
+  </body>
+</html>

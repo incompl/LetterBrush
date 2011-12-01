@@ -1,0 +1,95 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 1.2em;
+  /*-webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;*/
+}
+
+#easel {
+  float: left;
+}
+
+#hScroll {
+  width: 800px;
+  height: 20px;
+  background-color: #5d5d5d;
+  position: absolute;
+  top: 600px;
+  border-width: 2px;
+  border-color: black #949494 #949494 black;
+  border-style: solid;
+}
+
+#hScrollHandle {
+  width: 16px;
+  height: 16px;
+  background-color: #e083ff;
+  border-radius: 10px;
+  border: solid #c7c7c7 2px;
+  position: absolute;
+}
+
+#tools {
+  width: 220px;
+  float: left;
+  text-align: center;
+}
+
+#currentCharLabel {
+  padding: .5em 0;
+  font-style: italic;
+}
+
+#currentChar {
+  font-size: 96px;
+  text-shadow: 1px 1px 0 #a03bff;
+  margin: 0 0 20px;
+}
+
+#currentCharHelp {
+  margin: .5em 0;
+}
+
+#toolSelector {
+  background-color: #efdeff;
+  padding: 10px;
+}
+
+#toolHelp {
+  text-align: left;
+}
+
+#toolSelector button {
+  font-size: 1.2em;
+  display: block;
+  width: 150px;
+  height: 60px;
+  margin: 2px 0;
+}
+
+#toolSelector button.active {
+  background-color: #e3ffdd;
+  border: solid 2px #22b400;
+  color: #115900;
+  text-shadow: 0 0 2px rgb(100, 255, 100);
+}
+
+#importExport {
+  margin: 10px 0 0;
+  background-color: #efdeff;
+  padding: 10px;
+}
+
+#importExport button {
+  font-size: 1.2em;
+}
+
+#exportText {
+  width: 400px;
+  height: 300px;
+  overflow: scroll;
+}
