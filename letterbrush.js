@@ -19,6 +19,25 @@ $(function() {
   };
   
   var text = [];
+  var textWidth = 0;
+  function updateTextWidth() {
+    textWidth = 0;
+    for (i = 0; i < text.length; i++) {
+      if (text[i].length > textWidth) {
+        textWidth = text[i].length;
+      }
+    }
+  }
+  
+  var undoStack = [];
+  var redoStack = [];
+  function pushUndoFrame() {
+    redoStack = [];
+    if (undoStack.length > 50) {
+      undoStack.shift();
+    }
+    undoStack.push($.extend(true, [], text)); // deep clone
+  }
   
   // generate test data
   text.push([]);
@@ -28,6 +47,7 @@ $(function() {
       text[i][j] = ".";
     }
   }
+  updateTextWidth();
   
   var $easel = $("#easel");
   
@@ -45,6 +65,9 @@ $(function() {
     
     // normal drawing tool
     pencil: inherit(Mode, {
+      mousedown: function() {
+        pushUndoFrame();
+      },
       mousemove: function(row, col) {
         text[col][row] = currentChar;
         draw();
@@ -107,6 +130,7 @@ $(function() {
                    true);
       },
       mouseup: function(row, col) {
+        pushUndoFrame();
         var nodes = this._line(row,
                    col,
                    interaction.originalRow,
@@ -128,6 +152,7 @@ $(function() {
         var potentials;
         var seen = {};
         seen[col + "," + row] = true;
+        pushUndoFrame();
         while (queue.length > 0) {
           cur = queue.pop();
           text[cur.col][cur.row] = currentChar;
@@ -165,6 +190,7 @@ $(function() {
         var startY = 0;
         var widthX = 0;
         var widthY = 0;
+        pushUndoFrame();
         if (row > interaction.originalRow &&
             col > interaction.originalCol) {
           startX = interaction.originalRow;
@@ -205,10 +231,13 @@ $(function() {
   };
   
   // delegate events to current draw mode's handler
-  $easel.mousedown(function(e) {
+  $(document).on("mousedown", "#easel", function(e) {
+    if (e.which === 3) {
+      return;
+    }
     interaction = {};
-    var row = Math.round(e.clientX / view.scale) + view.x;
-    var col = Math.round(e.clientY / view.scale) + view.y;
+    var row = Math.floor(e.clientX / view.scale) + view.x;
+    var col = Math.floor(e.clientY / view.scale) + view.y;
     interaction.originalRow = row;
     interaction.originalCol = col;
     interaction.dragging = true;
@@ -216,7 +245,7 @@ $(function() {
       mode[currentMode].mousedown(row, col);
     }
   })
-  .mousemove(function(e) {
+  .on("mousemove", "#easel", function(e) {
     if (!interaction.dragging) {
       return;
     }
@@ -226,13 +255,26 @@ $(function() {
       mode[currentMode].mousemove(row, col);
     }
   })
-  .mouseup(function(e) {
+  .on("mouseup", "#easel", function(e) {
+    if (!interaction.dragging) {
+      return;
+    }
     var row = Math.floor(e.clientX / view.scale) + view.x;
     var col = Math.floor(e.clientY / view.scale) + view.y;
     interaction.dragging = false;
     if (text[col] !== undefined && text[col][row] !== undefined) {
       mode[currentMode].mouseup(row, col);
     }
+  })
+  .on("contextmenu", "#easel", function(e) {
+    // right click is the eyedropper-style color picker
+    var row = Math.floor(e.clientX / view.scale) + view.x;
+    var col = Math.floor(e.clientY / view.scale) + view.y;
+    if (text[col] !== undefined && text[col][row] !== undefined) {
+      currentChar = text[col][row];
+      $("#currentChar").text(text[col][row]);
+    }
+    e.preventDefault();
   });
   
   // render out the current text data
@@ -262,13 +304,29 @@ $(function() {
   }
   draw();
   
-  // pick key to draw by typing it
+  // keyboard input
   $(document).keydown(function(e) {
+    
+    // pick a key to draw
     var key = keyDecode(e);
-    if (key.length === 1) {
+    if (!e.shiftKey && !e.altKey && !e.ctrlKey && key.length === 1) {
+      e.preventDefault();
       currentChar = key;
       $("#currentChar").text(key);
     }
+    
+    // undo
+    if (e.ctrlKey && key === "z") {
+      e.preventDefault();
+      $("#undo").click();
+    }
+    
+    // redo
+    if (e.ctrlKey && key === "y") {
+      e.preventDefault();
+      $("#redo").click();
+    }
+    
   });
   
   // pick tool by clicking it
@@ -287,6 +345,7 @@ $(function() {
       modal: true,
       buttons: {
         'import': function() {
+          pushUndoFrame();
           text = [];
           var importStr = $("#importText").val();
           $.each(importStr.split(/\n/), function() {
@@ -297,6 +356,7 @@ $(function() {
             });
           });
           draw();
+          updateTextWidth();
           $(this).dialog("close");
         },
         cancel: function() {
@@ -309,6 +369,7 @@ $(function() {
   // export
   $("#exportDialog").hide();
   $("#export").click(function() {
+    $("body").removeClass("noSelect");
     var $exportDialog = $("#exportDialog");
     var $exportText = $("#exportText");
     var $progress = $("<div></div>");
@@ -324,9 +385,13 @@ $(function() {
         done: function() {
           $(this).dialog("close");
         }
+      },
+      beforeClose: function() {
+        $("body").addClass("noSelect");
       }
     });
     i = 0;
+    $exportText.remove();
     setTimeout(function exportLine() {
       $exportText.append("<div>" + text[i].join("") + "</div>");
       $progress.progressbar("option", "value", i / text.length * 100);
@@ -336,6 +401,7 @@ $(function() {
       }
       else {
         $progress.remove();
+        $exportDialog.append($exportText);
         $exportText.show();
       }
     }, 0);
@@ -343,48 +409,131 @@ $(function() {
   
   // horizontal scroll
   function hScrollTo(e) {
+    var maxXScroll = view.width * view.scale - 20;
     var sliderX = e.clientX - 8;
     sliderX = sliderX < 0 ? 0 : sliderX;
-    sliderX = sliderX > 780 ? 780 : sliderX;
-    var newX = Math.round((e.clientX / 780) * (text[0].length - view.width));
+    sliderX = sliderX > maxXScroll ? maxXScroll : sliderX;
+    var newX = Math.round((sliderX / maxXScroll) * (textWidth - view.width));
     $("#hScrollHandle").css("left", sliderX);
     view.x = newX;
     draw();
   }
-  $("#hScroll").mousedown(function(e) {
-    hScrollTo(e);
-    $(this).data("scrolling", true);
-  })
-  .mousemove(function(e) {
-    if ($(this).data("scrolling") === true) {
-      hScrollTo(e);
-    }
-  })
-  .mouseup(function() {
-    $(this).data("scrolling", false);
-  });
   
   // vertical scroll
   function vScrollTo(e) {
+    var maxYScroll = view.height * view.scale - 20;
     var sliderY = e.clientY - 8;
     sliderY = sliderY < 0 ? 0 : sliderY;
-    sliderY = sliderY > 580 ? 580 : sliderY;
-    var newY = Math.round((e.clientY / 580) * (text.length - view.height));
+    sliderY = sliderY > maxYScroll ? maxYScroll : sliderY;
+    var newY = Math.round((sliderY / maxYScroll) * (text.length - view.height));
     $("#vScrollHandle").css("top", sliderY);
     view.y = newY;
     draw();
   }
-  $("#vScroll").mousedown(function(e) {
-    vScrollTo(e);
-    $(this).data("scrolling", true);
-  })
-  .mousemove(function(e) {
-    if ($(this).data("scrolling") === true) {
+
+  // scrolling!
+  function stopScroll() {
+    $(this).data("vScroll", false);
+    $(this).data("hScroll", false);
+  }
+  $(document).mousedown(function(e) {
+    if (e.target.getAttribute("id") === "vScrollHandle") {
       vScrollTo(e);
+      $(this).data("vScroll", true);
+    }
+    else if (e.target.getAttribute("id") === "hScrollHandle") {
+      hScrollTo(e);
+      $(this).data("hScroll", true);
     }
   })
-  .mouseup(function() {
-    $(this).data("scrolling", false);
+  .mousemove(function(e) {
+    if ($(this).data("vScroll") === true) {
+      vScrollTo(e);
+    }
+    else if ($(this).data("hScroll") === true) {
+      hScrollTo(e);
+    }
+  })
+  .mousewheel(function(e, delta) {
+    var newY = view.y - delta;
+    if (newY >= 0 && newY < text.length - view.height + 1) {
+      view.y = newY;
+      draw();
+      var newTop = Math.round(view.y / (text.length - view.height) *
+                   (view.height * view.height - 20));
+      $("#vScrollHandle").css("top", newTop);
+    }
+  })
+  .mouseup(stopScroll);
+  $("#vScroll").mousedown(function(e) {
+    vScrollTo(e);
+    $(document).data("vScroll", true);
   });
+  $("#hScroll").mousedown(function(e) {
+    hScrollTo(e);
+    $(document).data("hScroll", true);
+  });
+  
+  // undo / redo
+  $("#undo").click(function() {
+    if (undoStack.length > 0) {
+      var frame = undoStack.pop();
+      redoStack.push(text);
+      text = frame;
+      draw();
+    }
+  });
+  $("#redo").click(function() {
+    if (redoStack.length > 0) {
+      var frame = redoStack.pop();
+      undoStack.push(text);
+      text = frame;
+      draw();
+    }
+  });
+  
+  // show shortcuts dialog
+  $("#shortcutsDialog").hide();
+  $("#shortcuts").click(function() {
+    $("#shortcutsDialog").dialog({
+      title: "Shortcuts",
+      modal: true,
+      width: 500,
+      position: ['center', 200],
+      buttons: {
+        done: function() {
+          $(this).dialog("close");
+        }
+      }
+    });
+  });
+  
+  // window resize
+  $(window).resize(function(e) {
+    var newWidth = $(document).width() - 250;
+    newWidth = Math.round(newWidth / view.scale);
+    
+    var newHeight = $(document).height() - 20;
+    newHeight = Math.round(newHeight / view.scale) - 1;
+    
+    $("#hScroll").width(newWidth * view.scale)
+    .css("top", newHeight * view.scale);
+    view.width = newWidth;
+    
+    $("#vScroll").height(newHeight * view.scale)
+    .css("left", newWidth * view.scale);
+    view.height = newHeight;
+    
+    $("#easel").remove();
+    $("body").append("<canvas id='easel" + 
+                           "' width='" + (newWidth * view.scale) +
+                           "' height='" + (newHeight * view.scale) +
+                           "'></canvas>");
+    $easel = $("#easel");
+    ctx = $easel[0].getContext("2d");
+    ctx.font = "20pt Arial";
+    draw();
+  })
+  .resize();
   
 });

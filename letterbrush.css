@@ -2,21 +2,21 @@ body {
   margin: 0;
   padding: 0;
   font-size: 1.2em;
-  /*-webkit-user-select: none;
+  overflow: hidden;
+}
+
+body.noSelect {
+  -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
-  user-select: none;*/
-}
-
-#easel {
-  float: left;
+  user-select: none;
 }
 
 #hScroll {
   width: 800px;
   height: 20px;
-  top: 600px;
+  bottom: 0;
   background: rgb(255,255,255); /* Old browsers */
   background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(209,209,209,1) 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(209,209,209,1))); /* Chrome,Safari4+ */
@@ -30,8 +30,9 @@ body {
 #vScroll {
   width: 20px;
   height: 600px;
-  left: 800px;
-  bbackground: rgb(255,255,255); /* Old browsers */
+  right: 220px;
+  top: 0;
+  background: rgb(255,255,255); /* Old browsers */
   background: -moz-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(209,209,209,1) 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(209,209,209,1))); /* Chrome,Safari4+ */
   background: -webkit-linear-gradient(left, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -50,16 +51,18 @@ body {
 #hScrollHandle, #vScrollHandle {
   width: 16px;
   height: 16px;
-  background-color: #e083ff;
+  background-color: white;
   border-radius: 10px;
-  border: solid #959595 2px;
+  border: solid #cacaca 2px;
   position: relative;
+  cursor: pointer;
 }
 
 #tools {
-  margin-left: 20px;
   width: 220px;
-  float: left;
+  position: absolute;
+  right: 0;
+  top: 0;
   text-align: center;
 }
 
@@ -83,16 +86,15 @@ body {
   padding: 10px;
 }
 
-#toolHelp {
-  text-align: left;
-}
-
 #toolSelector button {
   font-size: 1.2em;
-  display: block;
-  width: 150px;
+  width: 95px;
   height: 60px;
   margin: 2px 0;
+}
+
+button:hover {
+  border: solid 2px #555555;
 }
 
 #toolSelector button.active {
@@ -100,6 +102,10 @@ body {
   border: solid 2px #22b400;
   color: #115900;
   text-shadow: 0 0 2px rgb(100, 255, 100);
+}
+
+#links {
+  margin: .5em 0 0;
 }
 
 #importExport {

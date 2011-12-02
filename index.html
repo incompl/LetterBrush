@@ -7,12 +7,13 @@
     <link rel="stylesheet" href="lib/jqui/jquery-ui-1.8.16.custom.css">
     <script src="lib/jquery.js"></script>
     <script src="lib/jqui/jquery-ui-1.8.16.custom.min.js"></script>
+    <script src="lib/jquery.mousewheel.min.js"></script>
     <script src="lib/inherit.js"></script>
     <script src="lib/keyDecode.js"></script>
     <script src="letterbrush.js"></script>
   </head>
   </head>
-  <body>
+  <body class="noSelect">
     <canvas id="easel" width="800" height="600">
       You need canvas!
     </canvas>
@@ -32,16 +33,28 @@
         <button data-tool="line" class="tool">line</button>
         <button data-tool="square" class="tool">square</button>
         <button data-tool="fill" class="tool">fill</button>
+        <button id="undo">undo</button>
+        <button id="redo">redo</button>
       </div>
       <div id="importExport">
         <button id="import">import</button>
         <button id="export">export</button>
+        <div id="links">
+          <a href="#" id="shortcuts">shortcuts</a>
+          |
+          <a href="http://incompl.com">my blog</a>
+        </div>
       </div>
       <div id="importDialog">
         <textarea id="importText">paste text here</textarea>
       </div>
       <div id="exportDialog">
         <div id="exportText"></div>
+      </div>
+      <div id="shortcutsDialog">
+        ctrl-z = undo<br>
+        ctrl-y = redo<br>
+        right click = eyedropper-style letter picker
       </div>
     </div>
   </body>
