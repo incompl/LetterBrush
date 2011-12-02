@@ -52,7 +52,7 @@ $(function() {
   var $easel = $("#easel");
   
   var ctx = $easel[0].getContext("2d");
-  ctx.font = "20pt Arial";
+  ctx.font = view.scale + "pt Arial";
 
   var Mode = {
     mouseup: $.noop,
@@ -282,7 +282,7 @@ $(function() {
   var currentCol = 0;
   function draw() {
     var color;
-    ctx.clearRect(0, 0, view.width * view.scale, view.height * view.scale);
+    ctx.clearRect(0, 0, $easel.width(), $easel.height());
     for (currentRow = view.y; currentRow < view.y + view.height; currentRow++) {
       var row = text[currentRow];
       if (!row) {
@@ -549,9 +549,19 @@ $(function() {
                            "'></canvas>");
     $easel = $("#easel");
     ctx = $easel[0].getContext("2d");
-    ctx.font = "20pt Arial";
+    ctx.font = view.scale + "pt Arial";
     draw();
   })
   .resize();
+  
+  // zoom
+  $("#zoom").change(function() {
+    view.scale = $(this).val();
+    view.x = 0;
+    view.y = 0;
+    $(window).resize();
+    ctx.font = view.scale + "pt Arial";
+    draw();
+  });
   
 });

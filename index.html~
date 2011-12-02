@@ -29,10 +29,10 @@
       <div id="currentCharHelp">type a letter<br>draw that letter</div>
       <div id="toolSelector">
         <div id="toolHelp">choose your weapon:</div>
-        <button data-tool="pencil" class="tool active">pencil</button>
-        <button data-tool="line" class="tool">line</button>
-        <button data-tool="square" class="tool">square</button>
-        <button data-tool="fill" class="tool">fill</button>
+        <button id="pencil" data-tool="pencil" class="tool active">pencil</button>
+        <button id="line" data-tool="line" class="tool">line</button>
+        <button id="square" data-tool="square" class="tool">square</button>
+        <button id="fill" data-tool="fill" class="tool">fill</button>
         <button id="undo">undo</button>
         <button id="redo">redo</button>
       </div>
@@ -54,7 +54,11 @@
       <div id="shortcutsDialog">
         ctrl-z = undo<br>
         ctrl-y = redo<br>
-        right click = eyedropper-style letter picker
+        right click = eyedropper<br>
+        f1 = pencil<br>
+        f2 = line<br>
+        f3 = square<br>
+        f4 = fill
       </div>
     </div>
   </body>

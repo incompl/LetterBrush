@@ -104,12 +104,6 @@ button:hover {
   text-shadow: 0 0 2px rgb(100, 255, 100);
 }
 
-#zoom {
-  -webkit-appearance: none !important;
-  background-color: white;
-  border-radius: 10px;
-}
-
 #links {
   margin: .5em 0 0;
 }
