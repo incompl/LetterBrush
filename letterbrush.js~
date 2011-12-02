@@ -309,40 +309,22 @@ $(function() {
     
     // pick a key to draw
     var key = keyDecode(e);
-    if (!e.altKey && !e.ctrlKey && key.length === 1) {
+    if (!e.shiftKey && !e.altKey && !e.ctrlKey && key.length === 1) {
       e.preventDefault();
       currentChar = key;
       $("#currentChar").text(key);
     }
     
     // undo
-    else if (e.ctrlKey && key === "z") {
+    if (e.ctrlKey && key === "z") {
       e.preventDefault();
       $("#undo").click();
     }
     
     // redo
-    else if (e.ctrlKey && key === "y") {
+    if (e.ctrlKey && key === "y") {
       e.preventDefault();
       $("#redo").click();
-    }
-    
-    // tools shortcuts
-    else if (key === "f1") {
-      e.preventDefault();
-      $("#pencil").click();
-    }
-    else if (key === "f2") {
-      e.preventDefault();
-      $("#line").click();
-    }
-    else if (key === "f3") {
-      e.preventDefault();
-      $("#square").click();
-    }
-    else if (key === "f4") {
-      e.preventDefault();
-      $("#fill").click();
     }
     
   });
