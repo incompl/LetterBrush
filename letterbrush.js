@@ -1,3 +1,14 @@
+/*
+Copyright (C) 2011 Greg Smith <gsmith@incompl.com>
+
+Released under the MIT license:
+https://github.com/incompl/LetterBrush/blob/master/LICENSE
+
+Created at Bocoup http://bocoup.com
+
+Created for 91 http://startcontinue.com
+*/
+
 $(function() {
   
   var i, j;
