@@ -410,6 +410,7 @@ $(function() {
   // import
   $("#importDialog").hide();
   $("#import").click(function() {
+    var $importText = $("#importText");
     $("#importDialog").dialog({
       title: "Import",
       modal: true,
@@ -417,7 +418,7 @@ $(function() {
         'import': function() {
           pushUndoFrame();
           text = [];
-          var importStr = $("#importText").val();
+          var importStr = $importText.val();
           $.each(importStr.split(/\n/), function() {
             var row = [];
             var shit = this.split("");
@@ -435,6 +436,8 @@ $(function() {
         }
       }
     });
+    $importText[0].focus();
+    $importText[0].select();
   });
   
   // export
