@@ -41,9 +41,9 @@ $(function() {
   
   // generate test data
   text.push([]);
-  for (i = 0; i < 300; i++) {
+  for (i = 0; i < 50; i++) {
     text[i] = [];
-    for (j = 0; j < 300; j++) {
+    for (j = 0; j < 50; j++) {
       text[i][j] = ".";
     }
   }
