@@ -180,44 +180,68 @@ $(function() {
         draw();
         ctx.strokeStyle = "black";
         ctx.lineWidth = 2;
-        ctx.strokeRect((interaction.originalRow - view.x) * view.scale,
+        if (row >= interaction.originalRow &&
+            col >= interaction.originalCol) {
+          ctx.strokeRect((interaction.originalRow - view.x) * view.scale,
                      (interaction.originalCol - view.y) * view.scale,
-                     (row - interaction.originalRow) * view.scale,
-                     (col - interaction.originalCol) * view.scale);
+                     (row - interaction.originalRow + 1) * view.scale,
+                     (col - interaction.originalCol + 1) * view.scale);
+        }
+        else if (row <= interaction.originalRow &&
+                 col <= interaction.originalCol) {
+          ctx.strokeRect((interaction.originalRow - view.x + 1) * view.scale,
+                     (interaction.originalCol - view.y + 1) * view.scale,
+                     (row - interaction.originalRow - 1) * view.scale,
+                     (col - interaction.originalCol - 1) * view.scale);
+        }
+        else if (row > interaction.originalRow &&
+                 col < interaction.originalCol) {
+          ctx.strokeRect((interaction.originalRow - view.x) * view.scale,
+                     (interaction.originalCol - view.y + 1) * view.scale,
+                     (row - interaction.originalRow + 1) * view.scale,
+                     (col - interaction.originalCol - 1) * view.scale);
+        }
+        else if (row < interaction.originalRow &&
+                 col > interaction.originalCol) {
+          ctx.strokeRect((interaction.originalRow - view.x + 1) * view.scale,
+                     (interaction.originalCol - view.y) * view.scale,
+                     (row - interaction.originalRow - 1) * view.scale,
+                     (col - interaction.originalCol + 1) * view.scale);
+        }
       },
       mouseup: function(row, col) {
         var startX = 0;
         var startY = 0;
-        var widthX = 0;
-        var widthY = 0;
+        var widthX = 1;
+        var widthY = 1;
         pushUndoFrame();
-        if (row > interaction.originalRow &&
-            col > interaction.originalCol) {
-          startX = interaction.originalRow;
-          startY = interaction.originalCol;
-          widthX = row;
-          widthY = col;
+        if (row >= interaction.originalRow &&
+            col >= interaction.originalCol) {
+          startX += interaction.originalRow;
+          startY += interaction.originalCol;
+          widthX += row;
+          widthY += col;
         }
-        else if (row < interaction.originalRow &&
-                 col < interaction.originalCol) {
-          startX = row;
-          startY = col;
-          widthX = interaction.originalRow;
-          widthY = interaction.originalCol;
+        else if (row <= interaction.originalRow &&
+                 col <= interaction.originalCol) {
+          startX += row;
+          startY += col;
+          widthX += interaction.originalRow;
+          widthY += interaction.originalCol;
         }
         else if (row > interaction.originalRow &&
                  col < interaction.originalCol) {
-          startX = interaction.originalRow;
-          startY = col;
-          widthX = row;
-          widthY = interaction.originalCol;
+          startX += interaction.originalRow;
+          startY += col;
+          widthX += row;
+          widthY += interaction.originalCol;
         }
         else if (row < interaction.originalRow &&
                  col > interaction.originalCol) {
-          startX = row;
-          startY = interaction.originalCol;
-          widthX = interaction.originalRow;
-          widthY = col;
+          startX += row;
+          startY += interaction.originalCol;
+          widthX += interaction.originalRow;
+          widthY += col;
         }
         for (i = startY; i < widthY; i++) {
           for (j = startX; j < widthX; j++) {
@@ -473,12 +497,13 @@ $(function() {
     }
   })
   .mousewheel(function(e, delta) {
+    var maxYScroll = view.height * view.scale - 20;
     var newY = view.y - delta;
+    var newTop;
     if (newY >= 0 && newY < text.length - view.height + 1) {
       view.y = newY;
       draw();
-      var newTop = Math.round(view.y / (text.length - view.height) *
-                   (view.height * view.height - 20));
+      newTop = Math.round((newY / (text.length - view.height)) * maxYScroll);
       $("#vScrollHandle").css("top", newTop);
     }
   })
@@ -537,10 +562,12 @@ $(function() {
     $("#hScroll").width(newWidth * view.scale)
     .css("top", newHeight * view.scale);
     view.width = newWidth;
+    $("#hScrollHandle").css("left", 0);
     
     $("#vScroll").height(newHeight * view.scale)
     .css("left", newWidth * view.scale);
     view.height = newHeight;
+    $("#vScrollHandle").css("top", 0);
     
     $("#easel").remove();
     $("body").append("<canvas id='easel" + 
