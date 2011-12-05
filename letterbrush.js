@@ -394,9 +394,10 @@ $(function() {
           var importStr = $("#importText").val();
           $.each(importStr.split(/\n/), function() {
             var row = [];
+            var shit = this.split("");
             text.push(row);
-            $.each(this.split(""), function() {
-              row.push(this);
+            $.each(this.split(""), function(i, char) {
+              row.push(char);
             });
           });
           draw();
