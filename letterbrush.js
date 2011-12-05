@@ -45,7 +45,7 @@ $(function() {
   text.push([]);
   for (i = 0; i < 50; i++) {
     text[i] = [];
-    for (j = 0; j < 50; j++) {
+    for (j = 0; j < 100; j++) {
       text[i][j] = ".";
     }
   }
@@ -67,16 +67,32 @@ $(function() {
     
     // normal drawing tool
     pencil: inherit(Mode, {
+      _pencil: function(row, col) {
+        var current = {x:col, y:row};
+        var previous = this._previous;
+        var nodes;
+        if (previous !== undefined) {
+          nodes = mode.line._line(previous.x,
+                                  previous.y,
+                                  current.x,
+                                  current.y,
+                                  false);
+          $.each(nodes, function() {
+            text[this.x][this.y] = currentChar;
+          });
+        }
+        this._previous = current;
+        draw();
+      },
       mousedown: function() {
+        delete this._previous;
         pushUndoFrame();
       },
       mousemove: function(row, col) {
-        text[col][row] = currentChar;
-        draw();
+        this._pencil(row, col);
       },
       mouseup: function(row, col) {
-        text[col][row] = currentChar;
-        draw();
+        this._pencil(row, col);
       }
     }),
     
