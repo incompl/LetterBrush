@@ -370,21 +370,20 @@ $(function() {
     }
     
     // tools shortcuts
-    else if (key === "f1") {
+    else if (key === "tab") {
       e.preventDefault();
-      $("#pencil").click();
-    }
-    else if (key === "f2") {
-      e.preventDefault();
-      $("#line").click();
-    }
-    else if (key === "f3") {
-      e.preventDefault();
-      $("#square").click();
-    }
-    else if (key === "f4") {
-      e.preventDefault();
-      $("#fill").click();
+      if (currentMode === "pencil") {
+        $("#line").click();
+      }
+      else if (currentMode === "line") {
+        $("#square").click();
+      }
+      else if (currentMode === "square") {
+        $("#fill").click();
+      }
+      else if (currentMode === "fill") {
+        $("#pencil").click();
+      }
     }
     
   });
@@ -492,7 +491,7 @@ $(function() {
     draw();
   }
 
-  // scrolling!
+  // scrolling
   function stopScroll() {
     $(this).data("vScroll", false);
     $(this).data("hScroll", false);
