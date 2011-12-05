@@ -93,9 +93,10 @@ $(function() {
         this._previous = current;
         draw();
       },
-      mousedown: function() {
+      mousedown: function(row, col) {
         delete this._previous;
         pushUndoFrame();
+        text[col][row] = currentChar;
       },
       mousemove: function(row, col) {
         this._pencil(row, col);
@@ -638,7 +639,7 @@ $(function() {
                            "'></canvas>");
     $easel = $("#easel");
     ctx = $easel[0].getContext("2d");
-    ctx.font = view.scale + "pt Arial";
+    setFontSize();
     draw();
   })
   .resize();
@@ -649,8 +650,12 @@ $(function() {
     view.x = 0;
     view.y = 0;
     $(window).resize();
-    ctx.font = view.scale + "pt Arial";
+    setFontSize();
     draw();
   });
+  
+  function setFontSize() {
+    ctx.font = (view.scale - 3) + "pt Arial";
+  }
   
 });
