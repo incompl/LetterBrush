@@ -32,6 +32,8 @@ $(function() {
   var undoStack = [];
   var redoStack = [];
   function pushUndoFrame() {
+    $("#undo").prop("disabled", false);
+    $("#redo").prop("disabled", true);
     redoStack = [];
     if (undoStack.length > 50) {
       undoStack.shift();
@@ -518,12 +520,26 @@ $(function() {
   });
   
   // undo / redo
+  function highlight($button, className) {
+    if (!$button.hasClass(className)) {
+      $button.addClass(className);
+      window.setTimeout(function() {
+        $button.removeClass(className);
+      }, 100);
+    }
+  }
   $("#undo").click(function() {
+    var frame;
     if (undoStack.length > 0) {
-      var frame = undoStack.pop();
+      frame = undoStack.pop();
       redoStack.push(text);
       text = frame;
       draw();
+      highlight($(this), "beingClicked");
+      $("#redo").prop("disabled", false);
+      if (undoStack.length === 0) {
+        $(this).prop("disabled", true);
+      }
     }
   });
   $("#redo").click(function() {
@@ -532,6 +548,11 @@ $(function() {
       undoStack.push(text);
       text = frame;
       draw();
+      highlight($(this), "beingClicked");
+      $("#undo").prop("disabled", false);
+      if (redoStack.length === 0) {
+        $(this).prop("disabled", true);
+      }
     }
   });
   

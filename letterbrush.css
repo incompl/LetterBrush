@@ -66,6 +66,10 @@ body.noSelect {
   text-align: center;
 }
 
+#toolbox {
+  margin: 0 0 8px;
+}
+
 #currentCharLabel {
   padding: .5em 0;
   font-style: italic;
@@ -97,6 +101,15 @@ button:hover {
   border: solid 2px #555555;
 }
 
+button:disabled {
+  background-color: #ddd;
+  border: none;
+}
+
+button.beingClicked {
+  background-color: #ff8afb;
+}
+
 #toolSelector button.active {
   background-color: #e3ffdd;
   border: solid 2px #22b400;
@@ -104,8 +117,16 @@ button:hover {
   text-shadow: 0 0 2px rgb(100, 255, 100);
 }
 
+#zoomLabel, #zoom {
+  vertical-align: middle;
+}
+
+#zoomLabel {
+  font-family: sans-serif;
+}
+
 #zoom {
-  -webkit-appearance: none !important;
+  -webkit-appearance: none;
   background-color: white;
   border-radius: 10px;
 }

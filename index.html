@@ -28,15 +28,19 @@
       <div id="currentChar">G</div>
       <div id="currentCharHelp">type a letter<br>draw that letter</div>
       <div id="toolSelector">
-        <div id="toolHelp">choose your weapon:</div>
-        <button id="pencil" data-tool="pencil" class="tool active">pencil</button>
-        <button id="line" data-tool="line" class="tool">line</button>
-        <button id="square" data-tool="square" class="tool">square</button>
-        <button id="fill" data-tool="fill" class="tool">fill</button>
-        <button id="undo">undo</button>
-        <button id="redo">redo</button>
-        zoom:
-        <input id="zoom" type="range" min="5" max="40" step="5" value="20">
+        <div id="toolbox">
+          <div id="toolHelp">choose your weapon:</div>
+          <button id="pencil" data-tool="pencil" class="tool active">pencil</button>
+          <button id="line" data-tool="line" class="tool">line</button>
+          <button id="square" data-tool="square" class="tool">square</button>
+          <button id="fill" data-tool="fill" class="tool">fill</button>
+          <button id="undo" disabled>undo</button>
+          <button id="redo" disabled>redo</button>
+        </div>
+        <div id="zoomTools">
+          <span id="zoomLabel">zoom</span>
+          <input id="zoom" type="range" min="5" max="40" step="5" value="20">
+        </div>
       </div>
       <div id="importExport">
         <button id="import">import</button>
