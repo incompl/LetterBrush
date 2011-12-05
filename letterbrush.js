@@ -25,9 +25,7 @@ $(function() {
     height: 30
   };
   
-  var interaction = {
-    dragging: false
-  };
+  var interaction;
   
   var text = [];
   var textWidth = 0;
@@ -288,7 +286,7 @@ $(function() {
     if (e.which === 3) {
       return;
     }
-    interaction = {};
+    interaction = {cancelled: false, dragging: false};
     var row = Math.floor(e.clientX / view.scale) + view.x;
     var col = Math.floor(e.clientY / view.scale) + view.y;
     interaction.originalRow = row;
@@ -299,6 +297,9 @@ $(function() {
     }
   })
   .on("mousemove", "#easel", function(e) {
+    if (interaction.cancelled) {
+      return;
+    }
     if (!interaction.dragging) {
       return;
     }
@@ -309,7 +310,7 @@ $(function() {
     }
   })
   .on("mouseup", "#easel", function(e) {
-    if (!interaction.dragging) {
+    if (!interaction.dragging || interaction.cancelled) {
       return;
     }
     var row = Math.floor(e.clientX / view.scale) + view.x;
@@ -318,6 +319,10 @@ $(function() {
     if (text[col] !== undefined && text[col][row] !== undefined) {
       mode[currentMode].mouseup(row, col);
     }
+  })
+  .on("mouseup", window, function(e) {
+    interaction.cancelled = true;
+    draw();
   })
   .on("contextmenu", "#easel", function(e) {
     // right click is the eyedropper-style color picker
@@ -378,6 +383,13 @@ $(function() {
     else if (e.ctrlKey && key === "y") {
       e.preventDefault();
       $("#redo").click();
+    }
+    
+    // cancel interaction
+    else if (key === "escape") {
+      e.preventDefault();
+      interaction.cancelled = true;
+      draw();
     }
     
     // tools shortcuts
