@@ -424,25 +424,45 @@ $(function() {
   
   // import
   $("#importDialog").hide();
+  function importText(str) {
+    pushUndoFrame();
+    text = [];
+    $.each(str.split(/\n/), function() {
+      var row = [];
+      text.push(row);
+      $.each(this.split(""), function(i, char) {
+        row.push(char);
+      });
+    });
+    draw();
+    updateTextWidth();
+  }
+  
+  // import file
+  if (!window.FileReader) {
+    $("#fileInputWrapper").remove();
+  }
+  $("#fileInput").change(function() {
+    var file = this.files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      importText(e.target.result);
+      $("#fileInput").val("");
+    };
+    reader.readAsText(file);
+    $("#importDialog").dialog("close");
+  });
+  
+  // import text
   $("#import").click(function() {
     var $importText = $("#importText");
     $("#importDialog").dialog({
       title: "Import",
       modal: true,
+      width: 500,
       buttons: {
         'import': function() {
-          pushUndoFrame();
-          text = [];
-          var importStr = $importText.val();
-          $.each(importStr.split(/\n/), function() {
-            var row = [];
-            text.push(row);
-            $.each(this.split(""), function(i, char) {
-              row.push(char);
-            });
-          });
-          draw();
-          updateTextWidth();
+          importText($importText.val());
           $(this).dialog("close");
         },
         cancel: function() {
@@ -453,6 +473,7 @@ $(function() {
     $importText[0].focus();
     $importText[0].select();
   });
+  
   
   // export
   $("#exportDialog").hide();

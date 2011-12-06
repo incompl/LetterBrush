@@ -135,6 +135,25 @@ button.beingClicked {
   font-size: 1.2em;
 }
 
+#fileInputLabel {
+  margin: 5px 0;
+}
+
+#importOr {
+  margin: .5em 0;
+  padding: 1px 3px 3px;
+  border-width: 1px;
+  border-style: solid none;
+  border-color: #54004d;
+  text-align: center;
+  background-color: #ffe8fd;
+}
+
+#importText {
+  width: 450px;
+  height: 100px;
+}
+
 #exportText {
   width: 400px;
   height: 300px;
