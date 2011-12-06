@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>LetterBrush - HTML5 ASCII Art Fun</title>
-    <link rel="stylesheet" href="letterbrush.css">
     <link rel="stylesheet" href="lib/jqui/jquery-ui-1.8.16.custom.css">
+    <link rel="stylesheet" href="letterbrush.css">
     <script src="lib/jquery.js"></script>
     <script src="lib/jqui/jquery-ui-1.8.16.custom.min.js"></script>
     <script src="lib/jquery.mousewheel.min.js"></script>
@@ -29,7 +29,6 @@
       <div id="currentCharHelp">type a letter<br>draw that letter</div>
       <div id="toolSelector">
         <div id="toolbox">
-          <div id="toolHelp">choose your weapon:</div>
           <button id="pencil" data-tool="pencil" class="tool active">pencil</button>
           <button id="line" data-tool="line" class="tool">line</button>
           <button id="square" data-tool="square" class="tool">square</button>
@@ -38,7 +37,7 @@
           <button id="redo" disabled>redo</button>
         </div>
         <div id="zoomTools">
-          <div id="zoomLabel">zoom:</div>
+          <div id="zoomLabel">zoom</div>
           <div id="zoom"></div>
         </div>
       </div>
@@ -54,7 +53,7 @@
       <div id="importDialog">
         <div id="fileInputWrapper">
           <div id="fileInputLabel">
-            Upload file
+            File
           </div>
           <input type="file" id="fileInput">
           <div id="importOr">

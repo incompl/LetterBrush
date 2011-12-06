@@ -379,13 +379,19 @@ $(function() {
     // undo
     else if (ctrl && key === "z") {
       e.preventDefault();
-      $("#undo").click();
+      if (!$("#undo").prop("disabled")) {
+        highlight($("#undo"), "beingClicked");
+        $("#undo").click();
+      }
     }
     
     // redo
     else if (ctrl && key === "y") {
       e.preventDefault();
-      $("#redo").click();
+      if (!$("#redo").prop("disabled")) {
+        highlight($("#redo"), "beingClicked");
+        $("#redo").click();
+      }
     }
     
     // cancel interaction
@@ -628,7 +634,6 @@ $(function() {
       redoStack.push(text);
       text = frame;
       draw();
-      highlight($(this), "beingClicked");
       $("#redo").prop("disabled", false);
       if (undoStack.length === 0) {
         $(this).prop("disabled", true);
@@ -642,7 +647,6 @@ $(function() {
       undoStack.push(text);
       text = frame;
       draw();
-      highlight($(this), "beingClicked");
       $("#undo").prop("disabled", false);
       if (redoStack.length === 0) {
         $(this).prop("disabled", true);

@@ -13,6 +13,16 @@ body.noSelect {
   user-select: none;
 }
 
+a:link, a:visited {
+  color: black;
+}
+a:hover {
+  color: #ce00bd;
+}
+a:active {
+  background-color: #ffaef8;
+}
+
 #hScroll {
   width: 800px;
   height: 20px;
@@ -53,7 +63,7 @@ body.noSelect {
   height: 16px;
   background-color: white;
   border-radius: 10px;
-  border: solid #cacaca 2px;
+  border: solid #acacac 2px;
   position: relative;
   cursor: pointer;
 }
@@ -74,7 +84,7 @@ body.noSelect {
 #currentChar {
   font-size: 96px;
   text-shadow: 1px 1px 0 #a03bff;
-  margin: 0 0 20px;
+  margin: 0 0 10px;
 }
 
 #currentCharHelp {
@@ -93,21 +103,38 @@ body.noSelect {
   margin: 2px 0;
 }
 
+button {
+  border: solid 2px #b0b0b0;
+  border-radius: 5px;
+  background: #efefef; /* Old browsers */
+  background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(209,209,209,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(209,209,209,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* IE10+ */
+  background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(209,209,209,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d1d1d1',GradientType=0 ); /* IE6-9 */
+}
+
+button:active {
+  background: #ff8afb;
+}
+
 button:hover {
   border: solid 2px #555555;
 }
 
 button:disabled {
-  background-color: #ddd;
+  background: #ddd;
   border: none;
 }
 
 button.beingClicked {
-  background-color: #ff8afb;
+  background: #ff8afb;
 }
 
 #toolSelector button.active {
-  background-color: #e3ffdd;
+  background: #e3ffdd;
   border: solid 2px #22b400;
   color: #115900;
   text-shadow: 0 0 2px rgb(100, 255, 100);
@@ -158,4 +185,8 @@ button.beingClicked {
   width: 400px;
   height: 300px;
   overflow: scroll;
+}
+
+.ui-slider {
+  border: 1px solid #929292;
 }
