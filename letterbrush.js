@@ -366,22 +366,24 @@ $(function() {
   // keyboard input
   $(document).keydown(function(e) {
     
+    var ctrl = e.ctrlKey || e.metaKey;
+    
     // pick a key to draw
     var key = keyDecode(e);
-    if (!e.altKey && !e.ctrlKey && key.length === 1) {
+    if (!e.altKey && !ctrl && key.length === 1) {
       e.preventDefault();
       currentChar = key;
       $("#currentChar").text(key);
     }
     
     // undo
-    else if (e.ctrlKey && key === "z") {
+    else if (ctrl && key === "z") {
       e.preventDefault();
       $("#undo").click();
     }
     
     // redo
-    else if (e.ctrlKey && key === "y") {
+    else if (ctrl && key === "y") {
       e.preventDefault();
       $("#redo").click();
     }
