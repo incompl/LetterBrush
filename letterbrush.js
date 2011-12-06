@@ -674,10 +674,13 @@ $(function() {
   
   // window resize
   $(window).resize(function(e) {
-    var newWidth = $(document).width() - 250;
+    view.x = 0;
+    view.y = 0;
+    
+    var newWidth = $(window).width() - 250;
     newWidth = Math.round(newWidth / view.scale);
     
-    var newHeight = $(document).height() - 20;
+    var newHeight = $(window).height() - 10;
     newHeight = Math.round(newHeight / view.scale) - 1;
     
     $("#hScroll").width(newWidth * view.scale)
