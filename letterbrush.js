@@ -25,7 +25,7 @@ $(function() {
     height: 30
   };
   
-  var interaction;
+  var interaction = {};
   
   var text = [];
   var textWidth = 0;
@@ -541,14 +541,41 @@ $(function() {
     }
   })
   .mousewheel(function(e, delta) {
-    var maxYScroll = view.height * view.scale - 20;
-    var newY = view.y - delta;
-    var newTop;
-    if (newY >= 0 && newY < text.length - view.height + 1) {
-      view.y = newY;
-      draw();
-      newTop = Math.round((newY / (text.length - view.height)) * maxYScroll);
-      $("#vScrollHandle").css("top", newTop);
+    e.preventDefault();
+    delta = delta > 0 ? Math.ceil(delta) : Math.floor(delta);
+    
+    // detect horizontal scroll
+    var horizontalScroll = false;
+    if ((e.originalEvent.wheelDeltaX &&
+         e.originalEvent.wheelDeltaX !== 0) || // chrome
+        e.originalEvent.axis === 1) { // firefox
+      horizontalScroll = true;
+    }
+    
+    var maxScroll;
+    var newPos;
+    var newPosPixels;
+    if (horizontalScroll) {
+      maxScroll = view.width * view.scale - 20;
+      newPos = view.x - delta;
+      if (newPos >= 0 && newPos < textWidth - view.width + 1) {
+        view.x = newPos;
+        draw();
+        newPosPixels = Math.round((newPos /
+                      (textWidth - view.width)) * maxScroll);
+        $("#hScrollHandle").css("left", newPosPixels);
+      }
+    }
+    else {
+      maxScroll = view.height * view.scale - 20;
+      newPos = view.y - delta;
+      if (newPos >= 0 && newPos < text.length - view.height + 1) {
+        view.y = newPos;
+        draw();
+        newPosPixels = Math.round((newPos /
+                      (text.length - view.height)) * maxScroll);
+        $("#vScrollHandle").css("top", newPosPixels);
+      }
     }
   })
   .mouseup(stopScroll);
