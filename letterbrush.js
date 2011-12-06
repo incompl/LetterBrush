@@ -466,6 +466,7 @@ $(function() {
       title: "Import",
       modal: true,
       width: 500,
+      position: ['center', 100],
       buttons: {
         'import': function() {
           importText($importText.val());
@@ -495,7 +496,7 @@ $(function() {
       title: "Export",
       modal: true,
       width: 450,
-      position: ['center', 200],
+      position: ['center', 100],
       buttons: {
         done: function() {
           $(this).dialog("close");
@@ -661,7 +662,7 @@ $(function() {
       title: "Shortcuts",
       modal: true,
       width: 500,
-      position: ['center', 200],
+      position: ['center', 'center'],
       buttons: {
         done: function() {
           $(this).dialog("close");
