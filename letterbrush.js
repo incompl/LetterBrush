@@ -657,7 +657,8 @@ $(function() {
   
   // show shortcuts dialog
   $("#shortcutsDialog").hide();
-  $("#shortcuts").click(function() {
+  $("#shortcuts").click(function(e) {
+    e.preventDefault();
     $("#shortcutsDialog").dialog({
       title: "Shortcuts",
       modal: true,
