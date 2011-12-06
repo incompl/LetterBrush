@@ -94,6 +94,7 @@ a:active {
 #toolSelector {
   background-color: #efdeff;
   padding: 10px;
+  border-radius: 5px 0 0 5px;
 }
 
 #toolSelector button {
@@ -156,6 +157,7 @@ button.beingClicked {
   margin: 10px 0 0;
   background-color: #efdeff;
   padding: 10px;
+  border-radius: 5px 0 0 5px;
 }
 
 #importExport button {
