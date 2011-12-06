@@ -711,17 +711,14 @@ $(function() {
       draw();
     }
   });
-  $("#azoom").change(function() {
-    view.scale = $(this).val();
-    view.x = 0;
-    view.y = 0;
-    $(window).resize();
-    setFontSize();
-    draw();
-  });
   
   function setFontSize() {
-    ctx.font = (view.scale - 3) + "pt Arial";
+    if (view.scale > 10) {
+      ctx.font = (view.scale - 3) + "pt Arial";
+    }
+    else {
+      ctx.font = (view.scale) + "pt Arial";
+    }
   }
   
 });
