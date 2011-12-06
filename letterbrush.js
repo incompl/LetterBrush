@@ -597,7 +597,8 @@ $(function() {
       }, 100);
     }
   }
-  $("#undo").click(function() {
+  $("#undo").prop("disabled", true)
+  .click(function() {
     var frame;
     if (undoStack.length > 0) {
       frame = undoStack.pop();
@@ -611,7 +612,8 @@ $(function() {
       }
     }
   });
-  $("#redo").click(function() {
+  $("#redo").prop("disabled", true)
+  .click(function() {
     if (redoStack.length > 0) {
       var frame = redoStack.pop();
       undoStack.push(text);
@@ -672,7 +674,21 @@ $(function() {
   .resize();
   
   // zoom
-  $("#zoom").change(function() {
+  $("#zoom").slider({
+    min: 5,
+    max: 40,
+    step: 5,
+    value: 20,
+    change: function(e, ui) {
+      view.scale = ui.value;
+      view.x = 0;
+      view.y = 0;
+      $(window).resize();
+      setFontSize();
+      draw();
+    }
+  });
+  $("#azoom").change(function() {
     view.scale = $(this).val();
     view.x = 0;
     view.y = 0;

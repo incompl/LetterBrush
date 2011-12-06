@@ -66,10 +66,6 @@ body.noSelect {
   text-align: center;
 }
 
-#toolbox {
-  margin: 0 0 8px;
-}
-
 #currentCharLabel {
   padding: .5em 0;
   font-style: italic;
@@ -117,18 +113,12 @@ button.beingClicked {
   text-shadow: 0 0 2px rgb(100, 255, 100);
 }
 
-#zoomLabel, #zoom {
-  vertical-align: middle;
-}
-
 #zoomLabel {
-  font-family: sans-serif;
+  margin: 5px 0 10px;
 }
 
 #zoom {
-  -webkit-appearance: none;
-  background-color: white;
-  border-radius: 10px;
+  margin: 0 5px;
 }
 
 #links {
