@@ -25,16 +25,20 @@ $(function() {
     height: 30
   };
   
-  var interaction = {};
+  var interaction = {cancelled: false, dragging: false};
   
   var text = [];
   var textWidth = 0;
   function updateTextWidth() {
-    textWidth = 0;
+    var newWidth = 0;
     for (i = 0; i < text.length; i++) {
-      if (text[i].length > textWidth) {
-        textWidth = text[i].length;
+      if (text[i].length > newWidth) {
+        newWidth = text[i].length;
       }
+    }
+    if (textWidth !== newWidth) {
+      textWidth = newWidth;
+      $(window).resize();
     }
   }
   
@@ -634,6 +638,7 @@ $(function() {
       frame = undoStack.pop();
       redoStack.push(text);
       text = frame;
+      updateTextWidth();
       draw();
       $("#redo").prop("disabled", false);
       if (undoStack.length === 0) {
@@ -647,6 +652,7 @@ $(function() {
       var frame = redoStack.pop();
       undoStack.push(text);
       text = frame;
+      updateTextWidth();
       draw();
       $("#undo").prop("disabled", false);
       if (redoStack.length === 0) {
@@ -671,6 +677,16 @@ $(function() {
       }
     });
   });
+  
+  // update canvas font size
+  function setFontSize() {
+    if (view.scale > 10) {
+      ctx.font = (view.scale - 3) + "pt Arial";
+    }
+    else {
+      ctx.font = (view.scale) + "pt Arial";
+    }
+  }
   
   // window resize
   $(window).resize(function(e) {
@@ -720,14 +736,5 @@ $(function() {
       draw();
     }
   });
-  
-  function setFontSize() {
-    if (view.scale > 10) {
-      ctx.font = (view.scale - 3) + "pt Arial";
-    }
-    else {
-      ctx.font = (view.scale) + "pt Arial";
-    }
-  }
   
 });
