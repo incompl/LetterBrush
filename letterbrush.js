@@ -40,6 +40,21 @@ $(function() {
       textWidth = newWidth;
       $(window).resize();
     }
+    showHideScrollBars();
+  }
+  function showHideScrollBars() {
+    if (textWidth <= view.width) {
+      $("#hScroll").hide();
+    }
+    else {
+      $("#hScroll").show();
+    }
+    if (text.length <= view.height) {
+      $("#vScroll").hide();
+    }
+    else {
+      $("#vScroll").show();
+    }
   }
   
   var undoStack = [];
@@ -529,6 +544,9 @@ $(function() {
   
   // horizontal scroll
   function hScrollTo(e) {
+    if (textWidth <= view.width) {
+      return;
+    }
     var maxXScroll = view.width * view.scale - 20;
     var sliderX = e.clientX - 8;
     sliderX = sliderX < 0 ? 0 : sliderX;
@@ -541,6 +559,9 @@ $(function() {
   
   // vertical scroll
   function vScrollTo(e) {
+    if (text.length <= view.height) {
+      return;
+    }
     var maxYScroll = view.height * view.scale - 20;
     var sliderY = e.clientY - 8;
     sliderY = sliderY < 0 ? 0 : sliderY;
@@ -699,6 +720,13 @@ $(function() {
     var newHeight = $(window).height() - 10;
     newHeight = Math.round(newHeight / view.scale) - 1;
     
+    if (textWidth <= newWidth) {
+      newHeight++;
+    }
+    if (text.length <= newHeight) {
+      newWidth++;
+    }
+    
     $("#hScroll").width(newWidth * view.scale)
     .css("top", newHeight * view.scale);
     view.width = newWidth;
@@ -718,6 +746,7 @@ $(function() {
     ctx = $easel[0].getContext("2d");
     setFontSize();
     draw();
+    showHideScrollBars();
   })
   .resize();
   
