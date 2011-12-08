@@ -11,6 +11,11 @@ Created for 91 http://startcontinue.com
 
 $(function() {
   
+  var scrollbarWidth = $("#vScroll").width();
+  var scrollbarHeight = $("#vScroll").width();
+  var scrollbarSize = $("#vScroll").width();
+  var MENU_WIDTH = $("#tools").width();
+  
   var i, j;
   
   var currentMode = "pencil";
@@ -358,11 +363,12 @@ $(function() {
   // render out the current text data
   var currentRow = 0;
   var currentCol = 0;
+  var row;
   function draw() {
     var color;
     ctx.clearRect(0, 0, $easel.width(), $easel.height());
     for (currentRow = view.y; currentRow < view.y + view.height; currentRow++) {
-      var row = text[currentRow];
+      row = text[currentRow];
       if (!row) {
         continue;
       }
@@ -547,8 +553,8 @@ $(function() {
     if (textWidth <= view.width) {
       return;
     }
-    var maxXScroll = view.width * view.scale - 20;
-    var sliderX = e.clientX - 8;
+    var maxXScroll = $easel.width() - scrollbarWidth;
+    var sliderX = e.clientX - (scrollbarWidth / 2);
     sliderX = sliderX < 0 ? 0 : sliderX;
     sliderX = sliderX > maxXScroll ? maxXScroll : sliderX;
     var newX = Math.round((sliderX / maxXScroll) * (textWidth - view.width));
@@ -562,8 +568,8 @@ $(function() {
     if (text.length <= view.height) {
       return;
     }
-    var maxYScroll = view.height * view.scale - 20;
-    var sliderY = e.clientY - 8;
+    var maxYScroll = $easel.height() - scrollbarHeight;
+    var sliderY = e.clientY - (scrollbarHeight / 2);
     sliderY = sliderY < 0 ? 0 : sliderY;
     sliderY = sliderY > maxYScroll ? maxYScroll : sliderY;
     var newY = Math.round((sliderY / maxYScroll) * (text.length - view.height));
@@ -597,7 +603,6 @@ $(function() {
   })
   .mousewheel(function(e, delta) {
     e.preventDefault();
-    delta = delta > 0 ? Math.ceil(delta) : Math.floor(delta);
     
     // detect horizontal scroll
     var horizontalScroll = false;
@@ -606,31 +611,37 @@ $(function() {
         e.originalEvent.axis === 1) { // firefox
       horizontalScroll = true;
     }
+
+    delta = delta > 0 ? Math.ceil(delta) : Math.floor(delta);
     
     var maxScroll;
     var newPos;
     var newPosPixels;
     if (horizontalScroll) {
-      maxScroll = view.width * view.scale - 20;
-      newPos = view.x - delta;
-      if (newPos >= 0 && newPos < textWidth - view.width + 1) {
-        view.x = newPos;
-        draw();
-        newPosPixels = Math.round((newPos /
-                      (textWidth - view.width)) * maxScroll);
-        $("#hScrollHandle").css("left", newPosPixels);
+      for (i = 0; i < (view.width / 10); i++) {
+        maxScroll = $easel.width() - scrollbarWidth;
+        newPos = view.x - delta;
+        if (newPos >= 0 && newPos < textWidth - view.width + 1) {
+          view.x = newPos;
+          newPosPixels = Math.round((newPos /
+                        (textWidth - view.width)) * maxScroll);
+          $("#hScrollHandle").css("left", newPosPixels);
+        }
       }
+      draw();
     }
     else {
-      maxScroll = view.height * view.scale - 20;
-      newPos = view.y - delta;
-      if (newPos >= 0 && newPos < text.length - view.height + 1) {
-        view.y = newPos;
-        draw();
-        newPosPixels = Math.round((newPos /
-                      (text.length - view.height)) * maxScroll);
-        $("#vScrollHandle").css("top", newPosPixels);
+      for (i = 0; i < (view.height / 10); i++) {
+        maxScroll = $easel.height() - scrollbarHeight;
+        newPos = view.y - delta;
+        if (newPos >= 0 && newPos < text.length - view.height + 1) {
+          view.y = newPos;
+          newPosPixels = Math.round((newPos /
+                        (text.length - view.height)) * maxScroll);
+          $("#vScrollHandle").css("top", newPosPixels);
+        }
       }
+      draw();
     }
   })
   .mouseup(stopScroll);
@@ -701,6 +712,7 @@ $(function() {
   
   // update canvas font size
   function setFontSize() {
+    console.log(view.scale);
     if (view.scale > 10) {
       ctx.font = (view.scale - 3) + "pt Arial";
     }
@@ -714,33 +726,39 @@ $(function() {
     view.x = 0;
     view.y = 0;
     
-    var newWidth = $(window).width() - 250;
-    newWidth = Math.round(newWidth / view.scale);
+    var newWidthPixels = $(window).width() - MENU_WIDTH - scrollbarSize;
+    var newWidthTiles = Math.floor(newWidthPixels / view.scale);
     
-    var newHeight = $(window).height() - 10;
-    newHeight = Math.round(newHeight / view.scale) - 1;
+    var newHeightPixels = $(window).height() - scrollbarSize;
+    var newHeightTiles = Math.floor(newHeightPixels / view.scale);
     
-    if (textWidth <= newWidth) {
-      newHeight++;
+    if (textWidth <= newWidthTiles) {
+      newHeightTiles++;
+      newHeightPixels += view.scale;
     }
-    if (text.length <= newHeight) {
-      newWidth++;
+    if (text.length <= newHeightTiles) {
+      newWidthTiles++;
+      newWidthPixels += view.scale;
     }
     
-    $("#hScroll").width(newWidth * view.scale)
-    .css("top", newHeight * view.scale);
-    view.width = newWidth;
-    $("#hScrollHandle").css("left", 0);
+    $("#hScroll").width(newWidthPixels)
+    .css("top", newHeightPixels);
+    view.width = newWidthTiles;
+    scrollbarWidth = newWidthPixels * (view.width / textWidth);
+    $("#hScrollHandle").css("left", 0)
+    .width(scrollbarWidth);
     
-    $("#vScroll").height(newHeight * view.scale)
-    .css("left", newWidth * view.scale);
-    view.height = newHeight;
-    $("#vScrollHandle").css("top", 0);
+    $("#vScroll").height(newHeightPixels)
+    .css("left", newWidthPixels);
+    view.height = newHeightTiles;
+    scrollbarHeight = newHeightPixels * (view.height / text.length);
+    $("#vScrollHandle").css("top", 0)
+    .height(scrollbarHeight);
     
     $("#easel").remove();
     $("body").append("<canvas id='easel" + 
-                           "' width='" + (newWidth * view.scale) +
-                           "' height='" + (newHeight * view.scale) +
+                           "' width='" + (newWidthPixels) +
+                           "' height='" + (newHeightPixels) +
                            "'></canvas>");
     $easel = $("#easel");
     ctx = $easel[0].getContext("2d");
@@ -754,9 +772,9 @@ $(function() {
   $("#zoom").slider({
     min: 5,
     max: 40,
-    step: 5,
+    step: 1,
     value: 20,
-    change: function(e, ui) {
+    slide: function(e, ui) {
       view.scale = ui.value;
       view.x = 0;
       view.y = 0;
