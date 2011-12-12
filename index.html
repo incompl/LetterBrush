@@ -26,7 +26,7 @@
     </div>
     <div id="tools">
       <div id="currentCharLabel">today's letter is</div>
-      <div id="currentChar">G</div>
+      <div id="currentChar">B</div>
       <div id="currentCharHelp">type a letter<br>draw that letter</div>
       <div id="toolSelector">
         <div id="toolbox">
@@ -43,8 +43,11 @@
         </div>
       </div>
       <div id="importExport">
-        <button id="import">import</button>
-        <button id="export">export</button>
+        <div class="buttons">
+          <button id="import">import</button>
+          <button id="export">export</button>
+          <button id="colors">colors</button>
+        </div>
         <div id="links">
           <a href="#" id="shortcuts">shortcuts</a>
           |
@@ -67,6 +70,13 @@
       </div>
       <div id="exportDialog">
         <div id="exportText"></div>
+      </div>
+      <div id="colorsDialog">
+        <p>
+          Colors are customized with
+          <a href="http://en.wikipedia.org/wiki/JSON">JSON</a>.
+        </p>
+        <textarea id="colorsJSON"></textarea>
       </div>
       <div id="shortcutsDialog">
         ctrl-z = undo<br>

@@ -20,7 +20,7 @@ $(function() {
   
   var currentMode = "pencil";
   
-  var currentChar = "G";
+  var currentChar = "B";
   
   var view = {
     scale: 20, // pixels per char
@@ -72,6 +72,24 @@ $(function() {
       undoStack.shift();
     }
     undoStack.push($.extend(true, [], text)); // deep clone
+  }
+  
+  var defaultPallete = {
+    ".": "gray",
+    "R": "red",
+    "O": "orange",
+    "Y": "yellow",
+    "G": "green",
+    "B": "blue",
+    "I": "indigo",
+    "V": "purple"
+  };
+  var palette;
+  if (localStorage && localStorage.getItem("palette")) {
+    palette = JSON.parse(localStorage.getItem("palette"));
+  }
+  else {
+    palette = defaultPallete;
   }
   
   // generate test data
@@ -376,10 +394,9 @@ $(function() {
         if (!row[currentCol]) {
           continue;
         }
-        color = (row[currentCol].charCodeAt(0) - 48) * 3;
-        color = color < 0 ? 0 : color;
-        color = color > 360 ? 360 : color;
-        ctx.fillStyle = "hsl(" + color + ", 100%, 30%)";
+        color = palette[row[currentCol]];
+        color = color ? color : "black";
+        ctx.fillStyle = color;
         ctx.fillText(row[currentCol],
                      (currentCol - view.x) * view.scale,
                      (currentRow - view.y + 1) * view.scale);
@@ -390,6 +407,10 @@ $(function() {
   
   // keyboard input
   $(document).keydown(function(e) {
+    
+    if ($(".ui-widget-overlay").length > 0) {
+      return;
+    }
     
     var ctrl = e.ctrlKey || e.metaKey;
     
@@ -546,6 +567,55 @@ $(function() {
         $exportText.show();
       }
     }, 0);
+  });
+  
+  // colors
+  var $colorsDialog = $("#colorsDialog");
+  $colorsDialog.hide();
+  if (!JSON) {
+    $("#colors").remove();
+  }
+  function colorSave() {
+    var success = false;
+    var newPalette = $("#colorsJSON").val();
+    try {
+      palette = JSON.parse(newPalette);
+      success = true;
+    }
+    catch (e) {
+      alert("Invalid JSON!");
+    }
+    if (success) {
+      $(this).dialog("close");
+      draw();
+      if (localStorage) {
+        localStorage.setItem("palette", JSON.stringify(palette));
+      }
+    }
+  }
+  $("#colors").click(function() {
+    $("body").removeClass("noSelect");
+    $("#colorsJSON").val(JSON.stringify(palette));
+    $colorsDialog.dialog({
+      title: "Colors",
+      modal: true,
+      width: 450,
+      position: ['center', 100],
+      buttons: {
+        save: colorSave,
+        reset: function() {
+          $("#colorsJSON").val(JSON.stringify(defaultPallete));
+        },
+        cancel: function() {
+          $(this).dialog("close");
+        }
+      },
+      beforeClose: function() {
+        $("body").addClass("noSelect");
+      }
+    });
+    $("#colorsJSON")[0].focus();
+    $("#colorsJSON")[0].select();
   });
   
   // horizontal scroll
@@ -712,7 +782,6 @@ $(function() {
   
   // update canvas font size
   function setFontSize() {
-    console.log(view.scale);
     if (view.scale > 10) {
       ctx.font = (view.scale - 3) + "pt Arial";
     }

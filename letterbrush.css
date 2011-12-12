@@ -24,6 +24,10 @@ a:active {
   background-color: #ffaef8;
 }
 
+p {
+  margin: .3em 0;
+}
+
 #hScroll {
   width: 800px;
   height: 20px;
@@ -148,6 +152,11 @@ button.beingClicked {
   margin: 0 5px;
 }
 
+.buttons {
+  text-align: left;
+  margin: 0 12px;
+}
+
 #links {
   margin: .5em 0 0;
 }
@@ -186,6 +195,11 @@ button.beingClicked {
   width: 400px;
   height: 300px;
   overflow: scroll;
+}
+
+#colorsJSON {
+  width: 400px;
+  height: 250px;
 }
 
 .ui-slider {
