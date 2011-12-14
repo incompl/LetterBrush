@@ -395,8 +395,16 @@ $(function() {
           continue;
         }
         color = palette[row[currentCol]];
-        color = color ? color : "black";
-        ctx.fillStyle = color;
+        color = color ? color : "white";
+        if (color !== "white") {
+          ctx.fillStyle = color;
+          ctx.fillRect((currentCol - view.x) * view.scale,
+                       (currentRow - view.y) * view.scale,
+                       view.scale,
+                       view.scale);
+        }
+        ctx.fillStyle = "black";
+        
         ctx.fillText(row[currentCol],
                      (currentCol - view.x) * view.scale,
                      (currentRow - view.y + 1) * view.scale);
@@ -555,16 +563,10 @@ $(function() {
     i = 0;
     var exportStr = "";
     var textLength = text.length;
-    var exportStart = new Date().getTime();
     setTimeout(function exportLine() {
-      var start = new Date().getTime();
-      console.log("starting");
       var rowText = text[i].join("");
-      console.log("join: " + (new Date().getTime() - start));
       exportStr += rowText;
-      console.log("concat: " + (new Date().getTime() - start));
-      //$progress.progressbar("option", "value", i / textLength * 100);
-      console.log("progress: " + (new Date().getTime() - start));
+      $progress.progressbar("option", "value", i / textLength * 100);
       i++;
       if (i < text.length) {
         setTimeout(exportLine, 0);
@@ -575,7 +577,6 @@ $(function() {
         $exportText.show();
         $exportText[0].focus();
         $exportText[0].select();
-        console.log("done in " + (new Date().getTime() - exportStart));
       }
     }, 0);
   });
