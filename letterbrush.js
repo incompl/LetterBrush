@@ -75,7 +75,6 @@ $(function() {
   }
   
   var defaultPallete = {
-    ".": "gray",
     "R": "red",
     "O": "orange",
     "Y": "yellow",
