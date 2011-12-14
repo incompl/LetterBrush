@@ -176,6 +176,13 @@ button.beingClicked {
   margin: 5px 0;
 }
 
+#fileInputWrapper {
+  margin: 0 1em;
+  background-color: #deffdc;
+  padding: .2em .5em;
+  border-radius: 10px;
+}
+
 #importOr {
   margin: .5em 0;
   padding: 1px 3px 3px;
@@ -187,7 +194,8 @@ button.beingClicked {
 }
 
 #importText {
-  width: 450px;
+  margin: 0 1em;
+  width: 410px;
   height: 100px;
 }
 

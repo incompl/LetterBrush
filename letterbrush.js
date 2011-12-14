@@ -500,6 +500,7 @@ $(function() {
   // import file
   if (!window.FileReader) {
     $("#fileInputWrapper").remove();
+    $("#importOr").remove();
   }
   $("#fileInput").change(function() {
     var file = this.files[0];
