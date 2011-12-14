@@ -537,7 +537,7 @@ $(function() {
     var $progress = $("<div></div>");
     $exportDialog.append($progress);
     $progress.progressbar({value: 0});
-    $exportText.text("").hide();
+    $exportText.val("").hide();
     $exportDialog.dialog({
       title: "Export",
       modal: true,
@@ -553,18 +553,29 @@ $(function() {
       }
     });
     i = 0;
-    $exportText.remove();
+    var exportStr = "";
+    var textLength = text.length;
+    var exportStart = new Date().getTime();
     setTimeout(function exportLine() {
-      $exportText.append("<div>" + text[i].join("") + "</div>");
-      $progress.progressbar("option", "value", i / text.length * 100);
+      var start = new Date().getTime();
+      console.log("starting");
+      var rowText = text[i].join("");
+      console.log("join: " + (new Date().getTime() - start));
+      exportStr += rowText;
+      console.log("concat: " + (new Date().getTime() - start));
+      //$progress.progressbar("option", "value", i / textLength * 100);
+      console.log("progress: " + (new Date().getTime() - start));
       i++;
       if (i < text.length) {
         setTimeout(exportLine, 0);
       }
       else {
         $progress.remove();
-        $exportDialog.append($exportText);
+        $exportText.val(exportStr);
         $exportText.show();
+        $exportText[0].focus();
+        $exportText[0].select();
+        console.log("done in " + (new Date().getTime() - exportStart));
       }
     }, 0);
   });
