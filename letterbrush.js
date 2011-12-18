@@ -565,7 +565,7 @@ $(function() {
     var textLength = text.length;
     setTimeout(function exportLine() {
       var rowText = text[i].join("");
-      exportStr += rowText;
+      exportStr += rowText + "\n";
       $progress.progressbar("option", "value", i / textLength * 100);
       i++;
       if (i < text.length) {

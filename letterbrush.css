@@ -164,12 +164,13 @@ button.beingClicked {
 #importExport {
   margin: 10px 0 0;
   background-color: #efdeff;
-  padding: 10px;
+  padding: 10px 3px;
   border-radius: 5px 0 0 5px;
 }
 
 #importExport button {
-  font-size: 1.2em;
+  font-size: 1.1em;
+  width: 90px;
 }
 
 #fileInputLabel {
